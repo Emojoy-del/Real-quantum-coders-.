@@ -1,0 +1,267 @@
+// server/middleware/authmiddleware.js
+
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // Adjust path as needed
+
+/**
+ * Authentication Middleware
+ * Verifies JWT token and attaches user to request object
+ */
+
+// Main authentication middleware
+const authMiddleware = async (req, res, next) => {
+    try {
+        // Get token from header
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access denied. No token provided.'
+            });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key');
+        
+        // Find user
+        const user = await User.findById(decoded.userId).select('-password');
+        
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid token. User not found.'
+            });
+        }
+
+        // Check if user is active
+        if (user.status === 'inactive') {
+            return res.status(403).json({
+                success: false,
+                message: 'Account is deactivated. Please contact support.'
+            });
+        }
+
+        // Attach user to request
+        req.user = user;
+        req.userId = user._id;
+        req.token = token;
+        
+        next();
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid token.'
+            });
+        }
+        
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Token expired. Please login again.'
+            });
+        }
+        
+        res.status(500).json({
+            success: false,
+            message: 'Authentication error.',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Role-based authorization middleware
+ * @param {...string} roles - Allowed roles
+ */
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Authentication required.'
+            });
+        }
+
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: `Access denied. ${req.user.role} role is not authorized.`,
+                allowedRoles: roles
+            });
+        }
+        
+        next();
+    };
+};
+
+/**
+ * Check if user owns the resource or is admin
+ * @param {Function} getResourceOwnerId - Function to get resource owner ID
+ */
+const checkOwnership = (getResourceOwnerId) => {
+    return async (req, res, next) => {
+        try {
+            const resourceOwnerId = await getResourceOwnerId(req);
+            
+            if (req.user.role === 'admin' || req.user._id.toString() === resourceOwnerId.toString()) {
+                next();
+            } else {
+                res.status(403).json({
+                    success: false,
+                    message: 'Access denied. You do not own this resource.'
+                });
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Error checking ownership.',
+                error: error.message
+            });
+        }
+    };
+};
+
+/**
+ * Optional authentication - doesn't require token but attaches user if provided
+ */
+const optionalAuth = async (req, res, next) => {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (token) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key');
+            const user = await User.findById(decoded.userId).select('-password');
+            if (user && user.status === 'active') {
+                req.user = user;
+                req.userId = user._id;
+            }
+        }
+        
+        next();
+    } catch (error) {
+        // Don't fail on invalid token for optional auth
+        next();
+    }
+};
+
+/**
+ * Rate limiting middleware based on user
+ */
+const userRateLimit = new Map(); // In production, use Redis
+
+const rateLimit = (maxRequests, windowMs) => {
+    return (req, res, next) => {
+        const userId = req.userId || req.ip;
+        const now = Date.now();
+        
+        if (!userRateLimit.has(userId)) {
+            userRateLimit.set(userId, []);
+        }
+        
+        const userRequests = userRateLimit.get(userId);
+        const windowStart = now - windowMs;
+        
+        // Filter out old requests
+        const recentRequests = userRequests.filter(timestamp => timestamp > windowStart);
+        
+        if (recentRequests.length >= maxRequests) {
+            return res.status(429).json({
+                success: false,
+                message: `Too many requests. Please try again later.`
+            });
+        }
+        
+        recentRequests.push(now);
+        userRateLimit.set(userId, recentRequests);
+        
+        next();
+    };
+};
+
+/**
+ * Permission-based authorization
+ * @param {string} permission - Required permission
+ */
+const hasPermission = (permission) => {
+    return async (req, res, next) => {
+        const permissionsMap = {
+            // Ticket permissions
+            'create_ticket': ['customer', 'admin', 'support'],
+            'view_ticket': ['customer', 'admin', 'support', 'agent'],
+            'update_ticket': ['admin', 'support', 'agent'],
+            'delete_ticket': ['admin'],
+            'assign_ticket': ['admin', 'support'],
+            'resolve_ticket': ['admin', 'support', 'agent'],
+            
+            // User permissions
+            'view_users': ['admin'],
+            'create_user': ['admin'],
+            'update_user': ['admin'],
+            'delete_user': ['admin'],
+            
+            // Report permissions
+            'view_reports': ['admin', 'support'],
+            'generate_reports': ['admin'],
+            
+            // System permissions
+            'system_settings': ['admin']
+        };
+        
+        const allowedRoles = permissionsMap[permission] || [];
+        
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Authentication required.'
+            });
+        }
+        
+        if (allowedRoles.includes(req.user.role)) {
+            next();
+        } else {
+            res.status(403).json({
+                success: false,
+                message: `Access denied. Requires permission: ${permission}`
+            });
+        }
+    };
+};
+
+/**
+ * Verify email confirmation middleware
+ */
+const requireEmailVerified = (req, res, next) => {
+    if (!req.user.isEmailVerified) {
+        return res.status(403).json({
+            success: false,
+            message: 'Please verify your email address to access this resource.'
+        });
+    }
+    next();
+};
+
+/**
+ * Check account status middleware
+ */
+const requireActiveAccount = (req, res, next) => {
+    if (req.user.status !== 'active') {
+        return res.status(403).json({
+            success: false,
+            message: 'Your account is not active. Please contact support.'
+        });
+    }
+    next();
+};
+
+module.exports = {
+    authMiddleware,
+    authorize,
+    checkOwnership,
+    optionalAuth,
+    rateLimit,
+    hasPermission,
+    requireEmailVerified,
+    requireActiveAccount
+};
