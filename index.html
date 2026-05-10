@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketVault - Event Ticketing System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- Login/Register Screen -->
+    <template id="auth-template">
+        <div class="auth-container">
+            <div class="auth-wrapper">
+                <div class="auth-header">
+                    <h1>TicketVault</h1>
+                    <p>Your Event Ticketing Platform</p>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h2>Login</h2>
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button onclick="handleLogin()" class="btn btn-primary">Login</button>
+                    <p class="form-toggle">Don't have an account? <a href="#" onclick="toggleAuthForm()">Register</a></p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form" style="display: none;">
+                    <h2>Register</h2>
+                    <input type="text" id="register-name" placeholder="Full Name" required>
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <input type="password" id="register-password" placeholder="Password" required>
+                    <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
+                    
+                    <label>Account Type:</label>
+                    <div class="role-selector">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="user" checked>
+                            <span>Customer</span>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="organizer">
+                            <span>Event Organizer</span>
+                        </label>
+                    </div>
+
+                    <button onclick="handleRegister()" class="btn btn-primary">Register</button>
+                    <p class="form-toggle">Already have an account? <a href="#" onclick="toggleAuthForm()">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Main Dashboard Template -->
+    <template id="dashboard-template">
+        <div class="dashboard-container">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>TicketVault</h2>
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                </div>
+                <nav class="sidebar-menu">
+                    <ul id="sidebar-menu-items"></ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="user-info">
+                        <p id="current-user-name"></p>
+                        <p id="current-user-role"></p>
+                    </div>
+                    <button onclick="handleLogout()" class="btn btn-logout">Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="content-header">
+                    <h1 id="page-title"></h1>
+                    <div class="header-actions" id="header-actions"></div>
+                </div>
+                <div class="content-area" id="content-area"></div>
+            </main>
+        </div>
+    </template>
+
+    <!-- User Dashboard -->
+    <template id="user-dashboard-template">
+        <div class="dashboard-grid">
+            <div class="search-filter-bar">
+                <input type="text" id="search-events" placeholder="Search events..." class="search-input">
+                <select id="filter-date" class="filter-select">
+                    <option value="">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+                <button onclick="clearFilters()" class="btn btn-secondary">Clear</button>
+            </div>
+            <div id="events-grid" class="events-grid"></div>
+        </div>
+    </template>
+
+    <!-- Event Details Modal -->
+    <template id="event-details-template">
+        <div class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                
+                <div class="event-details-container">
+                    <div class="event-image-section">
+                        <img id="modal-event-image" src="" alt="Event">
+                    </div>
+                    
+                    <div class="event-info-section">
+                        <h2 id="modal-event-title"></h2>
+                        <div class="event-meta">
+                            <span class="meta-item">📍 <span id="modal-event-venue"></span></span>
+                            <span class="meta-item">📅 <span id="modal-event-date"></span></span>
+                            <span class="meta-item">⏰ <span id="modal-event-time"></span></span>
+                        </div>
+                        <p id="modal-event-description" class="event-description"></p>
+
+                        <div class="ticket-tiers">
+                            <h3>Available Tickets</h3>
+                            <div id="ticket-options"></div>
+                        </div>
+
+                        <div class="ticket-summary">
+                            <div class="summary-item">
+                                <label>Select Quantity:</label>
+                                <input type="number" id="ticket-quantity" min="1" value="1" class="quantity-input">
+                            </div>
+                            <div class="summary-item">
+                                <label>Total Price:</label>
+                                <p id="total-price" class="price-display">$0.00</p>
+                            </div>
+                        </div>
+
+                        <button onclick="purchaseTicket()" class="btn btn-primary btn-large">Buy Tickets</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Organizer Dashboard -->
+    <template id="organizer-dashboard-template">
+        <div class="organizer-dashboard">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <p class="stat-value" id="total-events">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <p class="stat-value" id="total-revenue">$0.00</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Tickets Sold</h3>
+                    <p class="stat-value" id="total-tickets-sold">0</p>
+                </div>
+            </div>
+
+            <div class="organizer-events-section">
+                <div class="section-header">
+                    <h2>Your Events</h2>
+                    <button onclick="showPostEventForm()" class="btn btn-primary">+ Post New Event</button>
+                </div>
+                <div id="organizer-events-list" class="events-table"></div>
+            </div>
+
+            <!-- Post Event Form (Hidden by default) -->
+            <div id="post-event-form-container" style="display: none;">
+                <div class="post-event-overlay"></div>
+                <div class="post-event-modal">
+                    <div class="post-event-header">
+                        <h2>Post New Event</h2>
+                        <button onclick="hidePostEventForm()" class="modal-close">&times;</button>
+                    </div>
+                    <form id="quick-create-event-form" class="event-form">
+                        <div class="form-section">
+                            <h3>Event Details</h3>
+                            
+                            <div class="form-group">
+                                <label>Event Title *</label>
+                                <input type="text" id="quick-event-title" placeholder="Enter event title" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description *</label>
+                                <textarea id="quick-event-description" placeholder="Enter event description" required></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Venue/Location *</label>
+                                    <input type="text" id="quick-event-venue" placeholder="Enter venue" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Event Date *</label>
+                                    <input type="date" id="quick-event-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Event Time *</label>
+                                    <input type="time" id="quick-event-time" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Event Image (optional)</label>
+                                <div class="image-upload">
+                                    <input type="file" id="quick-event-image" accept="image/*" onchange="previewQuickImage()">
+                                    <img id="quick-image-preview" style="display: none;" alt="Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Ticket Categories</h3>
+                            <div id="quick-ticket-categories" class="ticket-categories"></div>
+                            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                                <button type="button" onclick="addQuickTicketCategory()" class="btn btn-secondary">+ Add Ticket Category</button>
+                                <button type="button" onclick="addDefaultQuickTicketCategories()" class="btn btn-secondary">Add Common Tiers</button>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">Post Event</button>
+                            <button type="button" onclick="hidePostEventForm()" class="btn btn-secondary btn-large">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </template>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EventPass Lite</title>
+    <style>
+        :root { --p: #2563eb; --s: #10b981; --bg: #f8fafc; }
+        body { font-family: system-ui; background: var(--bg); padding: 20px; max-width: 800px; margin: auto; }
+        section { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px #0002; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { background: var(--p); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .event-card { border-left: 5px solid var(--p); padding: 15px; background: #fff; margin-top: 10px; border-radius: 4px; box-shadow: 0 2px 4px #0001; }
+        .price-tag { color: var(--s); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>🎫 Event Dashboard</h2>
+
+    <section>
+        <h3>Register New Event</h3>
+        <input type="text" id="title" placeholder="Event Name">
+        <div class="grid">
+            <input type="number" id="reg" placeholder="Regular Price">
+            <input type="number" id="vip" placeholder="VIP Price">
+        </div>
+        <button onclick="saveEvent()">Create Event</button>
+    </section>
+
+    <section>
+        <h3>Upcoming Events</h3>
+        <div id="eventList"></div>
+    </section>
+
+    <script>
+        // Load events from LocalStorage on startup
+        let events = JSON.parse(localStorage.getItem('myEvents')) || [];
+
+        function saveEvent() {
+            const newEvent = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                prices: {
+                    Regular: document.getElementById('reg').value,
+                    VIP: document.getElementById('vip').value
+                }
+            };
+            events.push(newEvent);
+            localStorage.setItem('myEvents', JSON.stringify(events));
+            render();
+        }
+
+        function buy(title, type, price) {
+            alert(`Ticket Confirmed!\nEvent: ${title}\nCategory: ${type}\nPrice: $${price}`);
+        }
+
+        function render() {
+            const list = document.getElementById('eventList');
+            list.innerHTML = events.map(e => `
+                <div class="event-card">
+                    <strong>${e.title}</strong>
+                    <div class="grid" style="margin-top:10px">
+                        <button style="background:#64748b" onclick="buy('${e.title}', 'Regular', ${e.prices.Regular})">
+                            Regular ($${e.prices.Regular})
+                        </button>
+                        <button style="background:var(--s)" onclick="buy('${e.title}', 'VIP', ${e.prices.VIP})">
+                            VIP ($${e.prices.VIP})
+                        </button>
+                    </div>
+                </div>
+            `).join('') || '<p>No events registered yet.</p>';
+        }
+
+        render();
+    </script>
+</body>
+</html>
+
+    <!-- Create Event Form -->
+    <template id="create-event-template">
+        <div class="form-container">
+            <form id="create-event-form" class="event-form">
+                <div class="form-section">
+                    <h3>Event Details</h3>
+                    
+                    <div class="form-group">
+                        <label>Event Title *</label>
+                        <input type="text" id="event-title" placeholder="Enter event title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea id="event-description" placeholder="Enter event description" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Venue/Location *</label>
+                            <input type="text" id="event-venue" placeholder="Enter venue" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Event Date *</label>
+                            <input type="date" id="event-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Event Time *</label>
+                            <input type="time" id="event-time" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Event Image (optional)</label>
+                        <div class="image-upload">
+                            <input type="file" id="event-image" accept="image/*" onchange="previewImage()">
+                            <img id="image-preview" style="display: none;" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Ticket Categories</h3>
+                    <div id="ticket-categories" class="ticket-categories"></div>
+                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                        <button type="button" onclick="addTicketCategory()" class="btn btn-secondary">+ Add Ticket Category</button>
+                        <button type="button" onclick="addDefaultTicketCategories()" class="btn btn-secondary">Add Common Tiers</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Create Event</button>
+            </form>
+        </div>
+    </template>
+
+    <!-- Ticket Category Template (for adding dynamically) -->
+    <template id="ticket-category-template">
+        <div class="ticket-category-card">
+            <div class="ticket-category-header">
+                <input type="text" placeholder="Ticket Name (e.g., VIP)" class="ticket-name" required>
+                <button type="button" onclick="removeTicketCategory(this)" class="btn-remove">✕</button>
+            </div>
+            <div class="ticket-category-fields">
+                <input type="number" placeholder="Price ($)" class="ticket-price" required step="0.01" min="0">
+                <input type="number" placeholder="Quantity" class="ticket-quantity" required min="1">
+            </div>
+        </div>
+    </template>
+
+    <!-- Event Card Template -->
+    <template id="event-card-template">
+        <div class="event-card">
+            <div class="event-card-image">
+                <img src="" alt="Event" class="event-image">
+                <span class="event-status-badge"></span>
+            </div>
+            <div class="event-card-content">
+                <h3 class="event-card-title"></h3>
+                <p class="event-card-venue"></p>
+                <div class="event-card-meta">
+                    <span class="date-badge"></span>
+                    <span class="time-badge"></span>
+                </div>
+                <p class="event-card-description"></p>
+                <div class="event-card-footer">
+                    <button onclick="openEventDetails(this)" class="btn btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Purchased Tickets Template -->
+    <template id="purchased-tickets-template">
+        <div class="purchased-tickets-container">
+            <div class="tickets-grid" id="tickets-grid"></div>
+        </div>
+    </template>
+
+    <!-- Ticket Card Template -->
+    <template id="ticket-card-template">
+        <div class="ticket-card">
+            <div class="ticket-header">
+                <h3 id="ticket-event-name"></h3>
+                <span class="ticket-id" id="ticket-id"></span>
+            </div>
+            <div class="ticket-details">
+                <p><strong>Category:</strong> <span id="ticket-category"></span></p>
+                <p><strong>Price:</strong> <span id="ticket-price"></span></p>
+                <p><strong>Buyer Name:</strong> <span id="ticket-buyer"></span></p>
+                <p><strong>Purchase Date:</strong> <span id="ticket-purchase-date"></span></p>
+            </div>
+            <div class="ticket-qr">
+                <div id="ticket-qr-code"></div>
+            </div>
+            <button onclick="downloadTicket(this)" class="btn btn-secondary btn-small">Download</button>
+        </div>
+    </template>
+
+    <!-- Admin Dashboard removed (platform does not use admin) -->
+
+    <script src="script.js"></script>
+</body>
+</html>
