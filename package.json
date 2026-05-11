@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "express": "^5.2.1",
-    "mongodb": "^7.2.0"
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.2"
   },
   "name": "iyf-s10-week-11-booking-backend",
   "version": "1.0.0",
