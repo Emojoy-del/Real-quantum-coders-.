@@ -22,12 +22,16 @@ const Navbar = () => {
           <NavLink to="/events">Events</NavLink>
           <NavLink to="/feed">Feed</NavLink>
           <NavLink to="/groups">Groups</NavLink>
+          <NavLink to="/creators">Creators</NavLink>
+          <NavLink to="/media">Media</NavLink>
           <NavLink to="/volunteer">Volunteer</NavLink>
           <NavLink to="/opportunities">Opportunities</NavLink>
           {isAuthenticated ? (
             <>
+              <NavLink to="/notifications">Alerts</NavLink>
               <NavLink to="/create-event">Create</NavLink>
               <NavLink to="/dashboard">Dashboard</NavLink>
+              <NavLink to="/profile">Profile</NavLink>
               <div className="nav-user">
                 <span>{user?.name || "User"}</span>
               </div>

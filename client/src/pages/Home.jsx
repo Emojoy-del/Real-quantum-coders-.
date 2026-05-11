@@ -82,6 +82,16 @@ const Home = () => {
             <h3>Volunteer Signups</h3>
             <p>Pick roles for upcoming events and help programs run smoothly.</p>
           </Link>
+          <Link to="/creators" className="hub-card">
+            <span className="pill">Follow</span>
+            <h3>Creators</h3>
+            <p>Follow organizers, artists, clubs, and teams behind the events.</p>
+          </Link>
+          <Link to="/media" className="hub-card">
+            <span className="pill">Memories</span>
+            <h3>Media Wall</h3>
+            <p>Share photos, highlights, and stories after events happen.</p>
+          </Link>
           <Link to="/opportunities" className="hub-card">
             <span className="pill">Grow</span>
             <h3>Opportunities</h3>

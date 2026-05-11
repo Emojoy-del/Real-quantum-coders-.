@@ -12,6 +12,10 @@ import CommunityFeed from "../pages/CommunityFeed";
 import Groups from "../pages/Groups";
 import Opportunities from "../pages/Opportunities";
 import Volunteer from "../pages/Volunteer";
+import Profile from "../pages/Profile";
+import Creators from "../pages/Creators";
+import Notifications from "../pages/Notifications";
+import Media from "../pages/Media";
 
 const AppRoutes = () => {
   return (
@@ -23,8 +27,19 @@ const AppRoutes = () => {
       <Route path="/groups" element={<Groups />} />
       <Route path="/opportunities" element={<Opportunities />} />
       <Route path="/volunteer" element={<Volunteer />} />
+      <Route path="/creators" element={<Creators />} />
+      <Route path="/notifications" element={<Notifications />} />
+      <Route path="/media" element={<Media />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={

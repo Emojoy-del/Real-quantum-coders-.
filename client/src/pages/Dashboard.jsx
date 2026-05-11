@@ -78,6 +78,26 @@ const Dashboard = () => {
           <h3>Grow your skills</h3>
           <p>Explore training, mentorship sessions, and community openings.</p>
         </Link>
+        <Link to="/profile" className="hub-card">
+          <span className="pill">Profile</span>
+          <h3>Build your identity</h3>
+          <p>Show your interests, bio, and community activity.</p>
+        </Link>
+        <Link to="/creators" className="hub-card">
+          <span className="pill">Follow</span>
+          <h3>Follow organizers</h3>
+          <p>Keep up with the creators and teams behind events.</p>
+        </Link>
+        <Link to="/media" className="hub-card">
+          <span className="pill">Media</span>
+          <h3>Share memories</h3>
+          <p>Post event photos and highlights for the community.</p>
+        </Link>
+        <Link to="/notifications" className="hub-card">
+          <span className="pill">Alerts</span>
+          <h3>Stay notified</h3>
+          <p>Track ticket alerts, volunteer openings, and opportunities.</p>
+        </Link>
       </section>
 
       <section className="panel">
