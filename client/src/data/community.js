@@ -1,7 +1,7 @@
 export const feedPosts = [
   {
     id: "post-volunteer-call",
-    author: "IYF Events Team",
+    author: "Vibe Nation Events Team",
     role: "Organizer",
     title: "Volunteer team call-up",
     body: "We are forming registration, media, setup, and hospitality teams for upcoming programs. Members can now sign up for roles inside the hub.",
@@ -19,7 +19,7 @@ export const feedPosts = [
   },
   {
     id: "post-community-recap",
-    author: "IYF Kenya",
+    author: "Vibe Nation Kenya",
     role: "Community",
     title: "Youth night recap",
     body: "Thank you to everyone who attended, served, performed, and invited friends. Photos and resources will be shared in the library soon.",
@@ -76,7 +76,7 @@ export const opportunities = [
     location: "Nairobi",
     deadline: "2026-05-25",
     description:
-      "Support photography, short-form video, live updates, and event recap content during IYF programs.",
+      "Support photography, short-form video, live updates, and event recap content during Vibe Nation programs.",
   },
   {
     id: "opp-mentor-session",

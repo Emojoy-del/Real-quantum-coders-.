@@ -1,13 +1,13 @@
 export const seedEvents = [
   {
-    id: "iyf-youth-night",
-    title: "IYF Youth Night",
+    id: "vibe-nation-youth-night",
+    title: "Vibe Nation Youth Night",
     date: "2026-06-12T18:30",
     location: "Nairobi Convention Centre",
     category: "Conference",
     price: 1200,
     capacity: 300,
-    organizer: "IYF Kenya",
+    organizer: "Vibe Nation Kenya",
     image:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
     description:
@@ -35,7 +35,7 @@ export const seedEvents = [
     category: "Music",
     price: 800,
     capacity: 500,
-    organizer: "IYF Events Team",
+    organizer: "Vibe Nation Events Team",
     image:
       "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80",
     description:

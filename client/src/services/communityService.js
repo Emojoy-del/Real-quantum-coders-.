@@ -5,9 +5,9 @@ import {
   volunteerRoles,
 } from "../data/community";
 
-const GROUPS_KEY = "iyf_joined_groups";
-const VOLUNTEERS_KEY = "iyf_volunteer_signups";
-const FEED_KEY = "iyf_feed_posts";
+const GROUPS_KEY = "vibe_nation_joined_groups";
+const VOLUNTEERS_KEY = "vibe_nation_volunteer_signups";
+const FEED_KEY = "vibe_nation_feed_posts";
 
 const readList = (key) => {
   try {

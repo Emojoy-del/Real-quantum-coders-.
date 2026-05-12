@@ -4,27 +4,27 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("iyf_user");
+    const savedUser = localStorage.getItem("vibe_nation_user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
   const login = (userData) => {
     const nextUser = {
       id: userData.id || crypto.randomUUID(),
-      name: userData.name || userData.email?.split("@")[0] || "IYF User",
+      name: userData.name || userData.email?.split("@")[0] || "Vibe Nation User",
       email: userData.email,
       role: userData.role || "attendee",
       token: userData.token || `demo-token-${Date.now()}`,
     };
 
     setUser(nextUser);
-    localStorage.setItem("iyf_user", JSON.stringify(nextUser));
+    localStorage.setItem("vibe_nation_user", JSON.stringify(nextUser));
     localStorage.setItem("token", nextUser.token);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("iyf_user");
+    localStorage.removeItem("vibe_nation_user");
     localStorage.removeItem("token");
   };
 

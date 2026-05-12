@@ -26,7 +26,7 @@ const CreateEvent = () => {
     event.preventDefault();
     const createdEvent = await eventService.createEvent(
       formData,
-      user?.name || "IYF Organizer"
+      user?.name || "Vibe Nation Organizer"
     );
     navigate(`/events/${createdEvent.id}`);
   };

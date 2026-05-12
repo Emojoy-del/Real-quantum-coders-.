@@ -2,7 +2,7 @@ import axios from "axios";
 import eventService from "./eventService";
 
 const API_BASE_URL = "http://localhost:5000/api";
-const BOOKINGS_KEY = "iyf_bookings";
+const BOOKINGS_KEY = "vibe_nation_bookings";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

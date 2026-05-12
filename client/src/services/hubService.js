@@ -1,10 +1,10 @@
 import { creators, mediaPosts, notifications } from "../data/hub";
 
-const FOLLOWS_KEY = "iyf_followed_creators";
-const COMMENTS_KEY = "iyf_event_comments";
-const MEDIA_KEY = "iyf_media_posts";
-const PROFILE_KEY = "iyf_member_profile";
-const NOTIFICATIONS_READ_KEY = "iyf_read_notifications";
+const FOLLOWS_KEY = "vibe_nation_followed_creators";
+const COMMENTS_KEY = "vibe_nation_event_comments";
+const MEDIA_KEY = "vibe_nation_media_posts";
+const PROFILE_KEY = "vibe_nation_member_profile";
+const NOTIFICATIONS_READ_KEY = "vibe_nation_read_notifications";
 
 const readJson = (key, fallback) => {
   try {

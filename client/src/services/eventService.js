@@ -1,6 +1,6 @@
 import { seedEvents } from "../data/events";
 
-const EVENTS_KEY = "iyf_events";
+const EVENTS_KEY = "vibe_nation_events";
 
 const readSavedEvents = () => {
   try {
@@ -27,7 +27,7 @@ export const eventService = {
     return events.find((event) => event.id === eventId) || null;
   },
 
-  createEvent: async (eventData, organizer = "IYF Organizer") => {
+  createEvent: async (eventData, organizer = "Vibe Nation Organizer") => {
     const savedEvents = readSavedEvents();
     const nextEvent = {
       ...eventData,

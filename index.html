@@ -57,8 +57,11 @@
     .logo{
       font-size:2rem;
       font-weight:800;
+      display:inline-block;
       background:linear-gradient(to right,var(--secondary),var(--primary));
+      color:transparent;
       -webkit-background-clip:text;
+      background-clip:text;
       -webkit-text-fill-color:transparent;
     }
 
@@ -159,6 +162,7 @@
 
     .gradient-text{
       background:linear-gradient(to right,var(--secondary),var(--primary));
+      background-clip:text;
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
     }
@@ -360,13 +364,13 @@
     </div>
 
     <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Events</a>
-      <a href="#">Festivals</a>
-      <a href="#">Tickets</a>
-      <a href="#">Dashboard</a>
+      <a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;">Home</a>
+      <a href="#" onclick="document.getElementById('events-section').scrollIntoView({ behavior: 'smooth' }); return false;">Events</a>
+      <a href="#" onclick="document.getElementById('events-section').scrollIntoView({ behavior: 'smooth' }); return false;">Festivals</a>
+      <a href="#" onclick="loadAuthScreen(); return false;">Tickets</a>
+      <a href="#" onclick="loadAuthScreen(); return false;">Dashboard</a>
 
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" onclick="loadAuthScreen()" type="button">
         Get Started
       </button>
     </div>
@@ -398,11 +402,11 @@
 
       <div class="hero-buttons">
 
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="document.querySelector('.section').scrollIntoView({ behavior: 'smooth' })" type="button">
           Explore Events
         </button>
 
-        <button class="btn btn-secondary">
+        <button class="btn btn-secondary" onclick="showRegister()" type="button">
           Become Organizer
         </button>
 
@@ -414,7 +418,7 @@
 
   <!-- EVENTS -->
 
-  <section class="section">
+  <section class="section" id="events-section">
 
     <div class="section-title">
 
@@ -593,5 +597,6 @@
 
   </footer>
 
+  <script src="script.js"></script>
 </body>
 </html>
