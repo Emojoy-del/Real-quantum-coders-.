@@ -11,7 +11,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm --prefix client run dev",
+    "start": "npm run server",
     "client": "npm --prefix client run dev",
     "build": "npm --prefix client run build",
     "server": "node server/server.js",

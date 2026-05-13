@@ -22,8 +22,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-app.get("/", (req, res) => {
-  res.send("API Running...");
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Serve React app for all remaining routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
