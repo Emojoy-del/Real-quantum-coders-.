@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.2"
+  },
+  "name": "vibe-nation-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm --prefix client run dev",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "server": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimberlywamboi8-commits/iyf-s10-week-11-booking-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kimberlywamboi8-commits/iyf-s10-week-11-booking-backend/issues"
+  },
+  "homepage": "https://github.com/kimberlywamboi8-commits/iyf-s10-week-11-booking-backend#readme"
+}

@@ -1,7 +1,7 @@
 export const creators = [
   {
-    id: "vibe-nation-kenya",
-    name: "Vibe Nation Kenya",
+    id: "iyf-kenya",
+    name: "IYF Kenya",
     type: "Organizer",
     focus: "Youth programs, conferences, mentorship, and community events",
     followers: 1280,
@@ -26,7 +26,7 @@ export const notifications = [
   {
     id: "notif-ticket",
     title: "Tickets are moving fast",
-    body: "Vibe Nation Youth Night has limited early-bird seats left.",
+    body: "IYF Youth Night has limited early-bird seats left.",
     createdAt: "2026-05-11T09:00:00",
     type: "Ticket",
   },
@@ -50,7 +50,7 @@ export const mediaPosts = [
   {
     id: "media-youth-night",
     title: "Youth Night Highlights",
-    author: "Vibe Nation Media Team",
+    author: "IYF Media Team",
     image:
       "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=80",
     caption: "Moments from the last community gathering.",

@@ -14,7 +14,7 @@ const Home = () => {
     <main>
       <section className="hero">
         <div className="hero-overlay">
-          <p className="eyebrow">Vibe Nation Event Ticketing</p>
+          <p className="eyebrow">IYF Event Ticketing</p>
           <h1>Discover, book, and manage events in one place.</h1>
           <p>
             Browse upcoming programs, reserve tickets, and keep every booking

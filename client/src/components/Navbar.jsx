@@ -15,8 +15,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="nav-container">
         <button className="brand" onClick={() => navigate("/")}>
-          <span className="brand-mark">VN</span>
-          <span>Vibe Nation</span>
+          <span className="brand-mark">IYF</span>
+          <span>Event Ticketing</span>
         </button>
         <div className="nav-links">
           <NavLink to="/events">Events</NavLink>

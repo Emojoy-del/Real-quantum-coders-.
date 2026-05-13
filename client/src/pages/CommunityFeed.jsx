@@ -26,7 +26,7 @@ const CommunityFeed = () => {
         <p className="eyebrow">Community</p>
         <h1>Community Feed</h1>
         <p className="muted">
-          Share updates, event recaps, team calls, and stories from the Vibe Nation community.
+          Share updates, event recaps, team calls, and stories from the IYF community.
         </p>
 
         <div className="feed-list">

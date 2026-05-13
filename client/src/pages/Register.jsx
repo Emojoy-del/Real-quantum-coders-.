@@ -20,7 +20,7 @@ const Register = () => {
   return (
     <main className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <p className="eyebrow">Join Vibe Nation events</p>
+        <p className="eyebrow">Join IYF events</p>
         <h1>Create account</h1>
         <label>
           Name
