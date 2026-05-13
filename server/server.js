@@ -26,7 +26,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Serve React app for all remaining routes
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
